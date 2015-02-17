@@ -6,72 +6,71 @@ var PORT = 8667;
 
 
 function Notifier(host, port, secret, encryption) {
-    this.host = host;
-    this.port = port;
-    this.secret = secret;
-    this.encryption = encryption;
-};
+  this.host = host;
+  this.port = port;
+  this.secret = secret;
+  this.encryption = encryption;
+}
 
 
 Notifier.prototype.send = function(hostName, serviceDesc, returnCode, pluginOutput, callback) {
 
 
-    var PACKET_VERSION = 3;
-    var MSG_LENGTH = 720;
+  var PACKET_VERSION = 3;
+  var MSG_LENGTH = 720;
 
 
-    var client = new net.Socket();
+  var client = new net.Socket();
 
-    client.connect(this.port, this.host, function() {
-        ///console.log("Connected to :" + HOST + ":" + PORT);
+  client.connect(this.port, this.host, function() {
+    ///console.log('Connected to :' + HOST + ':' + PORT);
+  });
+
+  client.on('data', function(data) {
+    ///console.log('DATA' + data.length);
+    var encoding = 'binary';
+    var inBuffer = new Buffer(data);
+    var iv = inBuffer.toString(encoding,0,128);
+    var timestamp = inBuffer.readInt32BE(128);
+
+    //header//
+    var outBuffer = new Buffer(MSG_LENGTH);
+    outBuffer.fill(0);
+    outBuffer.writeInt16BE(PACKET_VERSION, 0); //packet version
+    outBuffer.fill('h', 2, 3); //filling
+    outBuffer.writeUInt32BE(0, 4); // initial 0 for CRC32 value
+    outBuffer.writeUInt32BE(timestamp, 8); //timestamp
+    outBuffer.writeInt16BE(returnCode, 12); //returncode
+    outBuffer.write(hostName, 14, 77, encoding); // 64
+    outBuffer.write(serviceDesc, 78, 206, encoding); //128
+    outBuffer.write(pluginOutput, 206, 720, encoding);
+    outBuffer.writeUInt32BE(crc32.unsigned(outBuffer), 4);
+
+    if (this.encryption) {
+      var encrypter = new Crypter(this.encryption, this.secret, iv);
+      outBuffer = encrypter.encode(outBuffer);
+    }
+
+
+    client.write(outBuffer, function(a) {
+      client.destroy();
+      //console.log(client.bytesWritten);
     });
 
-    client.on('data', function(data) {
-        ///console.log('DATA' + data.length);
-        var encoding = 'binary'
-        var inBuffer = new Buffer(data);
-        var iv = inBuffer.toString(encoding,0,128);
-        var timestamp = inBuffer.readInt32BE(128);
 
-        //header//
-        var outBuffer = new Buffer(MSG_LENGTH);
-        outBuffer.fill(0);
-        outBuffer.writeInt16BE(PACKET_VERSION, 0); //packet version
-        outBuffer.fill("h", 2, 3); //filling
-        outBuffer.writeUInt32BE(0, 4); // initial 0 for CRC32 value
-        outBuffer.writeUInt32BE(timestamp, 8); //timestamp
-        outBuffer.writeInt16BE(returnCode, 12); //returncode
-        outBuffer.write(hostName, 14, 77, encoding); // 64
-        outBuffer.write(serviceDesc, 78, 206, encoding); //128
-        outBuffer.write(pluginOutput, 206, 720, encoding);
-        outBuffer.writeUInt32BE(crc32.unsigned(outBuffer), 4);
+  }.bind(this));
 
-        if (this.encryption) {
-            var encrypter = new Crypter(this.encryption, this.secret, iv);
-            outBuffer = encrypter.encode(outBuffer);
-        }
+  client.on('close', function() {
+    //no errors, lets go!
+    callback(null);
+  }.bind(this));
 
+  client.on('error', function(e){
+    var err = new Error('NSCA server connection failed!');
+    callback(err);
+  }.bind(this));
 
-        client.write(outBuffer, function(a) {
-            client.destroy();
-            //console.log(client.bytesWritten);
-        });
-
-
-    }.bind(this));
-
-    client.on('close', function() {
-        //no errors, lets go!
-        callback(null);
-    }.bind(this));
-
-    client.on('error', function(e){
-      var err = new Error("NSCA server connection failed!");
-      callback(err);
-    }.bind(this));
-
-}
-
+};
 
 
 module.exports = Notifier;

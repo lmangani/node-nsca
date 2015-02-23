@@ -17,7 +17,6 @@
   },
   "homepage": "https://github.com/nedeco/node-nsca",
   "dependencies": {
-    "mcrypt": "0.0.11",
     "buffer-crc32": "0.2.5"
   }
 }

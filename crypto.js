@@ -1,15 +1,16 @@
-var MCrypt = require('mcrypt').MCrypt;
+//var MCrypt = require('mcrypt').MCrypt;
 var XorEncoder = require('./xor');
 
 
 function Crypter(enc,key,iv){
-    this.key = key;
+  this.key = key;
   this.iv = iv;
   if (enc === 'xor') {
     this.encryption = new XorEncoder();
   }
   else {
-  this.encryption = new MCrypt(enc, 'cfb');
+    throw new Error("MCrypt is currently not supported!");
+    this.encryption = new MCrypt(enc, 'cfb');
   }
 }
 

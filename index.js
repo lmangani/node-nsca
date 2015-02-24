@@ -23,11 +23,11 @@ Notifier.prototype.send = function(hostName, serviceDesc, returnCode, pluginOutp
   var client = new net.Socket();
 
   client.connect(this.port, this.host, function() {
-    ///console.log('Connected to :' + HOST + ':' + PORT);
+    console.log('Connected to :' + HOST + ':' + PORT);
   });
 
   client.on('data', function(data) {
-    ///console.log('DATA' + data.length);
+    console.log('DATA' + data.length);
     var encoding = 'binary';
     var inBuffer = new Buffer(data);
     var iv = inBuffer.toString(encoding,0,128);
@@ -54,7 +54,7 @@ Notifier.prototype.send = function(hostName, serviceDesc, returnCode, pluginOutp
 
     client.write(outBuffer, function(a) {
       client.destroy();
-      //console.log(client.bytesWritten);
+      console.log(client.bytesWritten);
     });
 
 

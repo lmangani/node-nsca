@@ -1,5 +1,5 @@
 //var MCrypt = require("mcrypt").MCrypt;
-var DES3Encoder = require("./des3")
+var DES3Encoder = require("./des3");
 var XorEncoder = require("./xor");
 
 

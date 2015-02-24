@@ -1,8 +1,6 @@
 var net = require("net");
 var crc32 = require("buffer-crc32");
-var Crypter = require("./crypto");
-var HOST = "localhost";
-var PORT = 8667;
+var Crypter = require("./lib/crypto");
 
 
 function Notifier(host, port, secret, encryption) {
@@ -21,7 +19,7 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
   var client = new net.Socket();
 
   client.connect(this.port, this.host, function() {
-    console.log("Connected to :" + HOST + ":" + PORT);
+    console.log("Connected to :" + this.host + ":" + this.port);
   });
 
   client.on("data", function(data) {
@@ -82,4 +80,10 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
 };
 
 
-module.exports = Notifier;
+module.exports = {
+  Notifier: Notifier,
+  OK: 0,
+  WARN: 1,
+  FAIL: 2,
+  UNKNOWN: 3
+};

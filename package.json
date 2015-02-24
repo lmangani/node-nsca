@@ -1,16 +1,17 @@
 {
-  "name": "node-nsca",
+  "name": "nsca",
   "version": "0.0.1",
-  "description": "node-nsca =========",
-  "main": "index.js",
+  "description": "A node module for sending nagios nsca checks",
+  "main": "nsca.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "node nsca.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/nedeco/node-nsca.git"
   },
-  "author": "",
+  "author": "AlexRRR",
+  "contributors": [{"name": "jomo"}],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/nedeco/node-nsca/issues"

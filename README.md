@@ -1,12 +1,12 @@
-node-nsca
-=========
+# node-nsca
 
 A node module for sending nagios nsca checks
 
-currently supports clear text only and XOR modes only. 
+Currently supports clear text, XOR, 3DES modes only.
 Encryption coming soon!
 
-````javascript
-var n = new Notifier(HOST, PORT, SECRET, ENCRYPTION);
-n.send("localhost", "centos check",0,"Looks Good!");
+````JavaScript
+var nsca = require("nsca");
+var noti = new nsca.Notifier(HOST, PORT, PASSWORD, ENCRYPTION_MODE);
+noti.send("localhost", "centos check", nsca.OK, "Looks Good!");
 ````

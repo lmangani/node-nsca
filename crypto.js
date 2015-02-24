@@ -7,14 +7,14 @@ function Crypter(enc, key, iv) {
   this.key = key;
   this.iv = iv;
   switch (enc) {
-    case "xor":
+    case 1:
       this.encryption = new XorEncoder();
       break;
-    case "des3":
+    case 3:
       this.encryption = new DES3Encoder();
       break;
     default:
-      throw new Error("unsupported encryption mode!");
+      throw new Error("unsupported encryption mode " + enc + "!");
       //this.encryption = new MCrypt(enc, "cfb");
   }
 }

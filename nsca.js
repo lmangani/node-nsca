@@ -19,17 +19,17 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
   var client = new net.Socket();
 
   client.connect(this.port, this.host, function() {
-    console.log("Connected to :" + this.host + ":" + this.port);
-  });
+    //console.log("Connected to: " + this.host + ":" + this.port);
+  }.bind(this));
 
   client.on("data", function(data) {
-    console.log("DATA" + data.length);
+    //console.log("data received: " + data);
     var encoding = "binary";
     var inBuffer = new Buffer(data);
     var iv = inBuffer.toString(encoding, 0, 128);
-    console.log("received IV: " + iv);
+    //console.log("received IV: " + iv);
     var timestamp = inBuffer.readInt32BE(128);
-    console.log("received timestamp: " + timestamp);
+    //console.log("received timestamp: " + timestamp);
 
     var outBuffer = new Buffer(MSG_LENGTH);
     // empty Buffer
@@ -61,7 +61,7 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
 
     client.write(outBuffer, function(a) {
       client.destroy();
-      console.log(client.bytesWritten);
+      //console.log("data sent: " + outBuffer);
     });
 
 

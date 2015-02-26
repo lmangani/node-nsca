@@ -2,8 +2,9 @@
 
 A node module for sending nagios nsca checks
 
-Currently supports clear text, XOR, 3DES modes only.
-Encryption coming soon!
+Currently supports clear text and XOR.
+3DES mode is broken.
+Other encryption modes are currently disable due to tugrul/node-mcrypt#16
 
 ````JavaScript
 var nsca = require("nsca");

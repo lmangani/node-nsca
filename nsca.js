@@ -19,17 +19,17 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
   var client = new net.Socket();
 
   client.connect(this.port, this.host, function() {
-    //console.log("Connected to: " + this.host + ":" + this.port);
+    // console.log("Connected to: " + this.host + ":" + this.port);
   }.bind(this));
 
   client.on("data", function(data) {
-    //console.log("data received: " + data);
+    // console.log("data received: " + data);
     var encoding = "binary";
     var inBuffer = new Buffer(data);
     var iv = inBuffer.toString(encoding, 0, 128);
-    //console.log("received IV: " + iv);
+    // console.log("received IV: " + iv);
     var timestamp = inBuffer.readInt32BE(128);
-    //console.log("received timestamp: " + timestamp);
+    // console.log("received timestamp: " + timestamp);
 
     var outBuffer = new Buffer(MSG_LENGTH);
     // empty Buffer
@@ -40,7 +40,7 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
     outBuffer.fill("h", 2, 3);
     // CRC32 null
     outBuffer.writeUInt32BE(0, 4);
-    //timestamp
+    // timestamp
     outBuffer.writeUInt32BE(timestamp, 8);
     // status code
     outBuffer.writeInt16BE(statusCode, 12);
@@ -58,17 +58,14 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
       outBuffer = encrypter.encode(outBuffer);
     }
 
-
     client.write(outBuffer, function(a) {
       client.destroy();
-      //console.log("data sent: " + outBuffer);
+      // console.log("data sent: " + outBuffer);
     });
-
-
   }.bind(this));
 
   client.on("close", function() {
-    //no errors, lets go!
+    // no errors, lets go!
     callback(null);
   }.bind(this));
 
@@ -76,7 +73,6 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
     var err = new Error("NSCA server connection failed!");
     callback(err);
   }.bind(this));
-
 };
 
 

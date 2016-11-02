@@ -19,6 +19,6 @@
   "homepage": "https://github.com/nedeco/node-nsca",
   "dependencies": {
     "buffer-crc32": "0.2.5",
-    "mcrypt": "0.0.15"
+    "mcrypt": "0.1.11"
   }
 }

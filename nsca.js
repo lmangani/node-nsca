@@ -26,7 +26,7 @@ Notifier.prototype.send = function(hostName, serviceDesc, statusCode, pluginOutp
     // console.log("data received: " + data);
     var encoding = "binary";
     var inBuffer = new Buffer(data);
-    var iv = inBuffer.toString(encoding, 0, 128);
+    var iv = inBuffer.slice(0, 8);
     // console.log("received IV: " + iv);
     var timestamp = inBuffer.readInt32BE(128);
     // console.log("received timestamp: " + timestamp);
